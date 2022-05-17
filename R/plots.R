@@ -1,12 +1,32 @@
-### PLOTTING FUNCTIONS ###
+#' Functions for plotting stochastic and stratified sampling outputs.
+#' @import ggplot2
+#' @import scales
 
-# Plot estimates and their (transformed) CIs against an x-axis, e.g. for hazard curves
-# with confidence intervals against threshold
+
+#' Plot estimates and their (transformed) CIs against an x-axis, e.g. for hazard curves
+#' with confidence intervals against threshold.
+#'
+#' @param x_var Variable to plot on the x-axis.
+#' @param ests Variable to plot on the y-axis, e.g. stratified sampling estimates.
+#' @param g A transformation to be applied to the `ests`, provided as an expression of `x`.
+#' @param plot_ci Whether to plot a ribbon of the confidence intervals.
+#' @param title Plot title.
+#' @param x_name x-axis title.
+#' @param y_name y-axis title.
+#' @param x_labels x-axis labels.
+#' @param y_labels y-axis labels.
+#' @param x_lim x-axis labels.
+#' @param y_lim y-axis labels.
+#' @param ... Additional inputs to be passed to `get_cis`.
+#'
+#' @return Plot of `ests` against `x_var`, with confidence intervals.
 ests_plot <- function(x_var, ests, g = NULL,
                       plot_ci = FALSE, var_ests = NULL,
                       title = "", x_name = "", y_name = "",
                       x_labels = waiver(), y_labels = waiver(),
                       x_lim = NULL, y_lim = NULL, ...) {
+  if (length(x_var) != length(ests)) stop("Length of ests must match length of x_var.")
+
   if (!is.null(g)) { # Transform estimates
     x <- ests
     g_ests <- eval(g)
@@ -16,13 +36,17 @@ ests_plot <- function(x_var, ests, g = NULL,
 
   if (plot_ci) { # Get confidence intervals
     if (is.null(var_ests)) stop("var_ests required for plotting confidence intervals.")
+
     cis_list <- get_cis_list(ests, var_ests, g, ...)
+
+    # Get transformed CIs only
     if (is.expression(g)) cis_list <- lapply(cis_list, `[[`, "g_ci")
 
     df$ci_lower <- unlist(lapply(cis_list, `[[`, 1))
     df$ci_upper <- unlist(lapply(cis_list, `[[`, 2))
 
-    if (is.null(y_lim)) y_lim <- c(min(df$ci_lower[df$ci_lower > -Inf]), max(df$ci_upper))
+    if (is.null(y_lim)) y_lim <- c(min(df$ci_lower[df$ci_lower > -Inf]),
+                                   max(df$ci_upper))
   }
 
   if (is.null(x_lim)) x_lim <- c(min(x_var), max(x_var))
@@ -40,10 +64,32 @@ ests_plot <- function(x_var, ests, g = NULL,
   return(p)
 }
 
+#' Plot stratum estimates and their (transformed) CIs against an x-axis.
+#'
+#' @param x_var Variable of length N to plot on the x-axis.
+#' @param stratum_means List of length J containing N-vectors of stratum estimates.
+#' @param weights Vector of stratum weights of length J. Must sum to one.
+#' @param stratum_names Vector of length J of names of strata, to construct plot legend.
+#' @param g A transformation to be applied to the `ests`, provided as an expression of `x`.
+#' @param title Plot title.
+#' @param x_name x-axis title.
+#' @param y_name y-axis title.
+#' @param legend_label Legend title.
+#' @param x_labels x-axis labels.
+#' @param y_labels y-axis labels.
+#' @param x_lim x-axis labels.
+#' @param y_lim y-axis labels.
+#'
+#' @return Plot of `stratum_means` against `x_var`.
 stratum_means_plot <- function(x_var, stratum_means, weights, stratum_names = NULL,
                                g = NULL, title = "", x_name = "", y_name = "",
                                legend_label = "", x_labels = waiver(), y_labels = waiver(),
-                               x_lim = NULL, y_lim = NULL, ...) {
+                               x_lim = NULL, y_lim = NULL) {
+  if (length(stratum_means) != length(weights)) {
+    stop("Length of weights must match length of stratum_means.")
+  }
+  if (sum(weights) != 1) stop("Sum of weights must be unity.")
+
   n_strata <- length(weights)
   n_pts <- length(x_var)
   means <- unlist(stratum_means)

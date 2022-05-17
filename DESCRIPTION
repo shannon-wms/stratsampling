@@ -1,6 +1,6 @@
 Package: stratsampling
 Title: Stratified sampling
-Version: 0.0.0.9000
+Version: 0.0.0.1
 Authors@R: 
     person("Shannon", "Williams", , "shannon.williams@bristol.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -13,4 +13,4 @@ Imports:
   ggplot2,
   scales
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.0
+RoxygenNote: 7.2.0
