@@ -13,7 +13,12 @@ stratum_means_plot(
   title = "",
   x_name = "",
   y_name = "",
+  legend_position = "right",
   legend_label = "",
+  facet = TRUE,
+  cols = NULL,
+  rows = NULL,
+  scales = "fixed",
   x_labels = waiver(),
   y_labels = waiver(),
   x_lim = NULL,
@@ -37,7 +42,18 @@ stratum_means_plot(
 
 \item{y_name}{y-axis title.}
 
+\item{legend_position}{Legend position.}
+
 \item{legend_label}{Legend title.}
+
+\item{facet}{Whether to apply \code{facet_wrap} to strata.}
+
+\item{cols}{Number of columns in faceted plot.}
+
+\item{rows}{Number of rows in faceted plot.}
+
+\item{scales}{Scales of faceted plot (one of \code{"fixed"}, \code{"free"}, \code{"free_x"},
+\verb{"free_y}).}
 
 \item{x_labels}{x-axis labels.}
 

@@ -27,7 +27,7 @@ prop_alloc <- function(N, weights) {
 #' belongs.
 #' @param weights Vector of stratum weights of length J. Must sum to one.
 #'
-#' @return Named list containing stratifed sampling estimate, the variance of the
+#' @return Named list containing stratified sampling estimate, the variance of the
 #' estimate, and stratum means, variances, and sizes.
 #' @export
 strat_ests <- function(data, strata, weights) {
@@ -128,3 +128,4 @@ get_cis_list <- function(ests, var_ests, g = NULL, ...) {
   }
   return(cis_list)
 }
+

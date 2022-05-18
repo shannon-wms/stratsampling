@@ -20,6 +20,7 @@
 #' @param ... Additional inputs to be passed to `get_cis`.
 #'
 #' @return Plot of `ests` against `x_var`, with confidence intervals.
+#' @export
 ests_plot <- function(x_var, ests, g = NULL,
                       plot_ci = FALSE, var_ests = NULL,
                       title = "", x_name = "", y_name = "",
@@ -74,20 +75,26 @@ ests_plot <- function(x_var, ests, g = NULL,
 #' @param title Plot title.
 #' @param x_name x-axis title.
 #' @param y_name y-axis title.
+#' @param legend_position Legend position.
 #' @param legend_label Legend title.
+#' @param facet Whether to apply `facet_wrap` to strata.
+#' @param cols Number of columns in faceted plot.
+#' @param rows Number of rows in faceted plot.
+#' @param scales Scales of faceted plot (one of `"fixed"`, `"free"`, `"free_x"`,
+#' `"free_y`).
 #' @param x_labels x-axis labels.
 #' @param y_labels y-axis labels.
 #' @param x_lim x-axis labels.
 #' @param y_lim y-axis labels.
 #'
 #' @return Plot of `stratum_means` against `x_var`.
+#' @export
 stratum_means_plot <- function(x_var, stratum_means, weights, stratum_names = NULL,
                                g = NULL, title = "", x_name = "", y_name = "",
-                               legend_label = "", x_labels = waiver(), y_labels = waiver(),
+                               legend_position = "right", legend_label = "",
+                               facet = TRUE, cols = NULL, rows = NULL, scales = "fixed",
+                               x_labels = waiver(), y_labels = waiver(),
                                x_lim = NULL, y_lim = NULL) {
-  if (length(stratum_means) != length(weights)) {
-    stop("Length of weights must match length of stratum_means.")
-  }
   if (sum(weights) != 1) stop("Sum of weights must be unity.")
 
   n_strata <- length(weights)
@@ -111,8 +118,11 @@ stratum_means_plot <- function(x_var, stratum_means, weights, stratum_names = NU
     coord_cartesian(xlim = x_lim, ylim = y_lim) +
     scale_x_continuous(name = x_name, labels = x_labels) +
     scale_y_continuous(name = y_name, labels = y_labels) +
-    labs(colour = legend_label)
-    ggtitle(title)
+    labs(colour = legend_label) +
+    ggtitle(title) +
+    theme(legend.position = legend_position)
+
+  if (facet) p <- p + facet_wrap(vars(stratum), ncol = cols, nrow = rows, scales = scales)
 
   return(p)
 }

@@ -15,7 +15,7 @@ belongs.}
 \item{weights}{Vector of stratum weights of length J. Must sum to one.}
 }
 \value{
-Named list containing stratifed sampling estimate, the variance of the
+Named list containing stratified sampling estimate, the variance of the
 estimate, and stratum means, variances, and sizes.
 }
 \description{
